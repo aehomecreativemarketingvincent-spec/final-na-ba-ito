@@ -3,7 +3,7 @@
    ============================================= */
 
 // ─── CONFIG ───────────────────────────────────
-const GAS_URL = "https://script.google.com/macros/s/AKfycbzbdiqn_2POqByVcw_vTRS4wqhVj_4BsmHE9K55OOHxpTvbpP0F-y9CHTmRHv2eonsSJg/exec";
+const GAS_URL = "https://script.google.com/macros/s/AKfycbyQTxuqJVReQoD2FAbBK60GkvI_hEiMo1TinAH_qECUtR_30XCyYxGNe5A6sEcurvuq1w/exec";
 
 // ─── SAFE LOCALSTORAGE HELPERS ───────────────
 function lsGet(key, fallback) {
