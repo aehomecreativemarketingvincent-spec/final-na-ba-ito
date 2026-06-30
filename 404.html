@@ -1,0 +1,26 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>AE Home POS</title>
+  <script>
+    // GitHub Pages SPA fix — redirect all 404s back to index.html
+    // This preserves the path so the app can handle deep links if needed
+    var path = window.location.pathname;
+    var query = window.location.search;
+    var hash  = window.location.hash;
+    // Redirect to root — the POS is a single-screen app, always start fresh
+    window.location.replace('/');
+  </script>
+</head>
+<body>
+  <div style="display:flex;align-items:center;justify-content:center;height:100vh;font-family:sans-serif;color:#666;text-align:center">
+    <div>
+      <div style="font-size:2rem;margin-bottom:12px">🏪</div>
+      <div style="font-weight:600;margin-bottom:6px">AE Home POS</div>
+      <div style="font-size:0.85rem">Redirecting...</div>
+    </div>
+  </div>
+</body>
+</html>

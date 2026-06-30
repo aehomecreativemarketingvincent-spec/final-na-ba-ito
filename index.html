@@ -1,0 +1,154 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<meta name="theme-color" content="#1a1f2e">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="default">
+<meta name="apple-mobile-web-app-title" content="AE Home POS">
+<meta name="description" content="AE Home Trade Corp. Point of Sale System">
+
+
+<title>AE Home POS System</title>
+<link rel="manifest" href="manifest.json">
+<link rel="icon" href="favicon.ico">
+<link rel="preconnect" href="https://fonts.googleapis.com" crossorigin>
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700;800&family=DM+Sans:wght@400;500;600&family=JetBrains+Mono:wght@400;600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+<!-- LOGIN SCREEN -->
+<div id="loginScreen" class="screen active">
+  <div class="login-bg"></div>
+  <div class="login-card">
+    <div class="login-logo">
+      <div class="login-logo-text">AE HOME</div>
+      <p>Point of Sale System</p>
+    </div>
+    <div class="login-form">
+      <div class="form-group">
+        <label for="loginUser">USERNAME</label>
+        <input type="text" id="loginUser" name="loginUser"
+          placeholder="Enter username" autocomplete="username"
+          inputmode="text" spellcheck="false">
+      </div>
+      <div class="form-group">
+        <label for="loginPass">PASSWORD</label>
+        <input type="password" id="loginPass" name="loginPass"
+          placeholder="Enter password" autocomplete="current-password">
+      </div>
+      <button class="btn-login" onclick="doLogin()">Sign In</button>
+      <button class="btn-viewer" onclick="enterViewerMode()">Continue as Viewer</button>
+    </div>
+    <div id="loginError" class="login-error hidden"></div>
+  </div>
+</div>
+
+<!-- MAIN APP -->
+<div id="appScreen" class="screen hidden">
+
+  <!-- SIDEBAR -->
+  <aside id="sidebar" class="sidebar">
+    <div class="sidebar-header">
+      <div class="sidebar-logo">
+        <div>
+          <div class="sidebar-title">AE Home</div>
+          <div class="sidebar-sub">POS System</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="user-badge" id="userBadge">
+      <div class="user-avatar" id="userAvatar">?</div>
+      <div class="user-info">
+        <div class="user-name" id="userNameDisplay">Guest</div>
+        <div class="user-role" id="userRoleDisplay">Viewer</div>
+      </div>
+      <button class="btn-logout" onclick="doLogout()" title="Logout">Exit</button>
+    </div>
+
+    <nav class="nav-menu" id="navMenu" role="navigation" aria-label="Main Navigation"></nav>
+
+    <div class="sidebar-footer">
+      <div class="active-users-btn" onclick="showActiveUsers()" role="button" tabindex="0">
+        Active Users
+      </div>
+    </div>
+  </aside>
+
+  <!-- MAIN CONTENT -->
+  <main class="main-content" role="main">
+    <header class="topbar" role="banner">
+      <button class="menu-toggle" onclick="toggleSidebar()" aria-label="Toggle menu">&#9776;</button>
+      <div class="topbar-title" id="topbarTitle">Dashboard</div>
+      <div class="topbar-right">
+        <div class="clock" id="liveClock" aria-live="off"></div>
+      </div>
+    </header>
+    <div class="page-content" id="pageContent" role="region" aria-live="polite"></div>
+  </main>
+</div>
+
+<!-- MODAL OVERLAY -->
+<div id="modalOverlay" class="modal-overlay hidden" onclick="closeModal(event)" role="dialog" aria-modal="true">
+  <div class="modal-box" id="modalBox">
+    <button class="modal-close" onclick="closeModalDirect()" aria-label="Close modal">&#10005;</button>
+    <div id="modalContent"></div>
+  </div>
+</div>
+
+<!-- TOAST NOTIFICATIONS -->
+<div id="toastContainer" class="toast-container" role="status" aria-live="polite" aria-atomic="false"></div>
+
+<!-- RECEIPT MODAL -->
+<div id="receiptModal" class="receipt-modal hidden" role="dialog" aria-modal="true" aria-label="Transaction Receipt">
+  <div class="receipt-backdrop" onclick="closeReceiptModal()"></div>
+  <div class="receipt-wrapper">
+    <div id="receiptContent"></div>
+    <div class="receipt-actions">
+      <button class="btn-download-receipt" onclick="downloadReceipt()">Download PNG</button>
+      <button class="btn-close-receipt" onclick="closeReceiptModal()">Close</button>
+    </div>
+  </div>
+</div>
+
+<!-- ACTIVE USERS PANEL -->
+<div id="activeUsersPanel" class="active-users-panel hidden" role="dialog" aria-modal="true">
+  <div class="aup-backdrop" onclick="hideActiveUsers()"></div>
+  <div class="aup-card">
+    <h3>Currently Active Users</h3>
+    <div id="activeUsersList"></div>
+    <button class="btn btn-ghost btn-sm" onclick="hideActiveUsers()">Close</button>
+  </div>
+</div>
+
+<!-- CAMERA SCANNER MODAL -->
+<div id="cameraScannerModal" class="camera-modal hidden" role="dialog" aria-modal="true" aria-label="Camera Barcode Scanner">
+  <div class="camera-backdrop" onclick="closeCameraScanner()"></div>
+  <div class="camera-box">
+    <div class="camera-header">
+      <span>Camera Scanner</span>
+      <button onclick="closeCameraScanner()" aria-label="Close scanner">&#10005;</button>
+    </div>
+    <div class="camera-viewport">
+      <video id="cameraFeed" autoplay playsinline muted></video>
+      <div class="camera-overlay">
+        <div class="scan-line"></div>
+      </div>
+    </div>
+    <div id="scanConfirmDiv" style="display:none"></div>
+    <div class="camera-status" id="cameraStatus" aria-live="polite">Point camera at barcode...</div>
+    <div class="camera-actions">
+      <button class="btn btn-ghost btn-sm" onclick="switchCamera()">Flip Camera</button>
+      <button class="btn btn-danger btn-sm" onclick="closeCameraScanner()">Cancel</button>
+    </div>
+  </div>
+</div>
+
+<script src="app.js"></script>
+</body>
+</html>
